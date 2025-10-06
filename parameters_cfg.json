@@ -1,0 +1,9 @@
+{
+  "fh_port" : 6008,
+  "wp_ad": 7, 
+  "port": 5015,
+  "nphotons": 1000000000,
+  "host": "localhost",
+  "rep_rate": 58593,
+  "ntrig": 100
+}
