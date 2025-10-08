@@ -24,24 +24,27 @@ if __name__ == "__main__":
 
     st = startPOCAMSession(host=host, port=port)
     # check if icm was rebooted into correct firmware version
-    icm_fwversion = str(hex(st.icmFWVersion()))
-    if not icm_fwversion =='0x1700':
+    icm_fwversion = st.icmFWVersion()
+    if icm_fwversion < 0x1700:
         print('ERROR:  ICM FPGA has wrong firmware version booted. \n' \
         'Reboot ICM FPGA to version: 0x1700 then start configure script again. \n')
-        raise ValueError("ICM Firmware Version must be 0x1700")
+        raise RuntimeError("ICM Firmware Version must be 0x1700")
     
-    cur_stat = st.cmd("pcmDrop_stat", timeout=to).split()
-    if not cur_stat[1] == "IDLE":
-        print('\nERROR:  Device is not in IDLE state. Reset device before configuring. \n')
-        raise ValueError("drop op. status must be IDLE")
+    cur_stat = st.cmd("pcmDrop_stat", timeout=to)
+    LID = cur_stat.split("LID = ")[1].split(",")[0]
+    MCU_flash = cur_stat.split("flash = ")[1].split("\n")[0]
+    if not cur_stat.split()[1] == "IDLE":
+        print('\033[1m\033[91m\nERROR:  Device is not in IDLE state. POCAM drop was configured or started!\n\033[0m')
+        print(cur_stat)
+        raise RuntimeError("Drop op. status must be IDLE")
 
-    if not cur_stat[5] == "1,":
-        print('\nERROR:  LID interlock not enabled. Reset device before configuring. \n')
-        raise ValueError("LID interlock must be enabled")
+    if not LID == "1,":
+        print('\033[1m\033[91m\nERROR:  LID interlock not enabled. Enable LID before configuring! \n\033[0m')
+        raise RuntimeError("LID interlock must be enabled")
 
-    if not cur_stat[8] == "1":
-        print('\nERROR:  MCU flash not enabled. Reset device before configuring. \n')
-        raise ValueError("MCU flash must be enabled")
+    if not MCU_flash == "1":
+        print('\033[1m\033[91m\nERROR:  MCU flash not enabled. Reset device before configuring. \n\033[0m')
+        raise RuntimeError("MCU flash must be enabled")
     ## Resetting POCAM and ICM FIFOs
     st.toggle_boards(on=False)
     st.toggle_pwm(on=False)
