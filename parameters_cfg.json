@@ -1,7 +1,8 @@
 {
-  "fh_port" : 6008,
+  "fh_icm_api": "/home/terliuk/software/icecube/fh_server/v1.8.0/src/scripts/",
+  "fh_port" : 6000,
   "wp_ad": 7, 
-  "port": 5015,
+  "port": 5007,
   "nphotons": 1000000000,
   "host": "localhost",
   "rep_rate": 58593,
