@@ -32,17 +32,18 @@ if __name__ == "__main__":
     
     cur_stat = st.cmd("pcmDrop_stat", timeout=to)
     LID = cur_stat.split("LID = ")[1].split(",")[0]
-    MCU_flash = cur_stat.split("flash = ")[1].split("\n")[0]
+    MCU_flash = cur_stat.split("flash = ")[1].split(" \r\n")[0]
     if not cur_stat.split()[1] == "IDLE":
         print('\033[1m\033[91m\nERROR:  Device is not in IDLE state. POCAM drop was configured or started!\n\033[0m')
         print(cur_stat)
         raise RuntimeError("Drop op. status must be IDLE")
 
-    if not LID == "1,":
+    if not LID == "1":
         print('\033[1m\033[91m\nERROR:  LID interlock not enabled. Enable LID before configuring! \n\033[0m')
         raise RuntimeError("LID interlock must be enabled")
 
     if not MCU_flash == "1":
+        print(MCU_flash)
         print('\033[1m\033[91m\nERROR:  MCU flash not enabled. Reset device before configuring. \n\033[0m')
         raise RuntimeError("MCU flash must be enabled")
     ## Resetting POCAM and ICM FIFOs

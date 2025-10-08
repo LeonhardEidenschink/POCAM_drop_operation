@@ -19,10 +19,11 @@ if __name__ == "__main__":
     output = st.cmd("pcmDrop_stat", timeout=to)
     print("======== POCAM drop status ========")
     LID = output.split("LID = ")[1].split(",")[0]
-    MCU_flash = output.split("flash = ")[1].split("\n")[0]
+    MCU_flash = output.split("flash = ")[1].split(" \r\n")[0]
     if LID != "1":
         print("\033[1m\033[91mERROR! LID interlock disabled! \033[0m")
     if MCU_flash != "1":
+        print(f"{MCU_flash}")
         print("\033[1m\033[91mERROR! MCU flash interlock disabled! \033[0m")
     if output.split()[0] == "OK" and LID == "1" and MCU_flash == "1":
         print("\033[1m\033[92mPOCAM drop status OK ("+output.split()[1]+")\033[0m ")
